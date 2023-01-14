@@ -35,4 +35,23 @@ class SessionsController < ApplicationController
     reset_session
     render json: { status: 200, logged_out: true }
   end
+ 
+  def update
+    if @current_user
+      @current_user.avatar.attach(params[:avatar])
+      @current_user.full_name = params[:full_name]
+      @current_user.info = params[:info]
+      @current_user.save
+      render json: {
+      status: 200,
+      message: "Profile updated successfully",
+      user: @current_user
+    }
+    else
+    render json: {
+    status: 401,
+    message: "Unauthorized"
+    }
+    end
+  end
 end
