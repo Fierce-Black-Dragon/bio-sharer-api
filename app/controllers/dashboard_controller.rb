@@ -7,7 +7,7 @@ class DashboardController < ApplicationController
         end
        render json: {
         status: :created,
-        user:  @user
+        user:   UserSerializer.new(@user).serializable_hash[:data][:attributes]
       }
     end 
 end 
