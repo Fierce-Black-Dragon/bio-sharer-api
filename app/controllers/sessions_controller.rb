@@ -20,9 +20,10 @@ class SessionsController < ApplicationController
 
   def logged_in
     if @current_user
+    
       render json: {
         logged_in: true,
-        user: @current_user
+        user:  UserSerializer.new(@current_user).serializable_hash[:data][:attributes]
       }
     else
       render json: {
@@ -35,22 +36,24 @@ class SessionsController < ApplicationController
     reset_session
     render json: { status: 200, logged_out: true }
   end
-  # def update
-  #   if @current_user
-  #     @current_user.avatar.attach(params[:avatar])
-  #     @current_user.full_name = params[:full_name]
-  #     @current_user.info = params[:info]
-  #     @current_user.save
-  #     render json: {
-  #     status: 200,
-  #     message: "Profile updated successfully",
-  #     user: @current_user
-  #   }
-  #   else
-  #   render json: {
-  #   status: 401,
-  #   message: "Unauthorized"
-  #   }
-  #   end
-  # end
+
+ def update
+  user = User.find(params[:id])
+  if user
+  user.avatar.attach(params[:avatar])
+  user.full_name = params[:full_name]
+  user.info = params[:info]
+  user.save
+  render json: {
+  status: 200,
+  message: "Profile updated successfully",
+  user: user
+  }
+  else
+  render json: {
+  status: 401,
+  message: "Unauthorized"
+  }
+  end
+ end
 end
